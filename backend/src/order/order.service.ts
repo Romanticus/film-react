@@ -23,10 +23,9 @@ export class OrderService {
         firstTicket.session,
         tickets,
       );
-      const total = tickets.reduce((sum, ticket) => sum + ticket.price, 0);
 
       return {
-        total,
+        total:tickets.length,
         items: tickets.map((ticket) => ({
           ...ticket,
           id: uuid(),
