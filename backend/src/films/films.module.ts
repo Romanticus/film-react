@@ -7,7 +7,7 @@ import { FilmsController } from './films.controller';
 import { FilmsService } from './films.service';
 
 @Module({
-  imports: [ConfigModule], // ConfigModule уже глобальный, но можно явно импортировать
+  imports: [ConfigModule],
   providers: [
     {
       provide: 'DATABASE_CONNECTION',
@@ -15,11 +15,12 @@ import { FilmsService } from './films.service';
         const url = config.get<string>('DATABASE_URL');
         return mongoose.connect(url);
       },
-      inject: [ConfigService], // Внедряем ConfigService
+      inject: [ConfigService],
     },
     FilmsRepository,
     FilmsService,
-  ],exports: ['DATABASE_CONNECTION', FilmsRepository],
+  ],
+  exports: ['DATABASE_CONNECTION', FilmsRepository],
   controllers: [FilmsController],
 })
 export class FilmsModule {}

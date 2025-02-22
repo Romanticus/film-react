@@ -1,8 +1,9 @@
 import { ConfigModule } from '@nestjs/config';
 
-const applicationConfig: AppConfigDatabase = { 
-    driver: process.env.DATABASE_DRIVER,
-    url:process.env.DATABASE_URL };
+const applicationConfig: AppConfigDatabase = {
+  driver: process.env.DATABASE_DRIVER,
+  url: process.env.DATABASE_URL,
+};
 
 export const configProvider = {
   imports: [ConfigModule.forRoot()],

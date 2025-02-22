@@ -3,8 +3,6 @@
 export class FilmListResponseDTO {
   total: number; // Общее количество фильмов
   items: FilmDTO[]; // Список фильмов
-
- 
 }
 
 export class FilmDTO {
@@ -17,6 +15,18 @@ export class FilmDTO {
   description: string; // Полное описание
   image: string; // URL изображения
   cover: string; // URL обложки
+}
+export class SheduleDTO {
+  id: string;
+  daytime: Date;
+  hall: number;
+  rows: number;
+  seats: number;
+  price: number;
+  taken: string[];
+}
 
-  
+export class FilmSheduleDTO {
+  total: number;
+  items: SheduleDTO[];
 }

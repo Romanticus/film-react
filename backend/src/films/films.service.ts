@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FilmsRepository } from 'src/repository/films.repository';
-import { FilmListResponseDTO } from './dto/films.dto';
+import { FilmListResponseDTO, FilmSheduleDTO } from './dto/films.dto';
 
 @Injectable()
 export class FilmsService {
@@ -8,5 +8,13 @@ export class FilmsService {
 
   async getAllFilms(): Promise<FilmListResponseDTO> {
     return this.filmsRepository.findAll();
+  }
+
+  async getFilmShedule(id: string): Promise<FilmSheduleDTO> {
+    try {
+      return this.filmsRepository.findFilmShedule(id);
+    } catch (e) {
+      throw new Error('Фильм не найден');
+    }
   }
 }
