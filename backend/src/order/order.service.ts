@@ -25,7 +25,7 @@ export class OrderService {
       );
 
       return {
-        total:tickets.length,
+        total: tickets.length,
         items: tickets.map((ticket) => ({
           ...ticket,
           id: uuid(),

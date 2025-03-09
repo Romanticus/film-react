@@ -12,7 +12,7 @@ export class FilmsService {
 
   async getFilmShedule(id: string): Promise<FilmSheduleDTO> {
     try {
-      return this.filmsRepository.findFilmShedule(id);
+      return this.filmsRepository.findFilmSchedule(id);
     } catch (e) {
       throw new Error('Фильм не найден');
     }
