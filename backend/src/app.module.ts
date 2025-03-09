@@ -6,9 +6,9 @@ import { configProvider } from './app.config.provider';
 import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
 import { FilmsModule } from './films/films.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  exports: [configProvider],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -19,8 +19,10 @@ import { FilmsModule } from './films/films.module';
       serveRoot: '/content/afisha',
     }),
     FilmsModule,
+    DatabaseModule,
   ],
   controllers: [OrderController],
+  exports: [configProvider],
   providers: [configProvider, OrderService],
 })
 export class AppModule {}
