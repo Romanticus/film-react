@@ -9,8 +9,10 @@ import { Schedule } from 'src/films/entities/schedule.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
+      useFactory: (config: ConfigService) => {
+        const driver = config.get<'postgres' | 'mysql' | 'sqlite'>('DATABASE_DRIVER', 'postgres');
+        return{
+        type: driver, 
         host: config.get('DATABASE_HOST'),
         port: config.get('DATABASE_PORT'),
         username: config.get('DATABASE_USERNAME'),
@@ -20,7 +22,7 @@ import { Schedule } from 'src/films/entities/schedule.entity';
         synchronize: false,
         // logging: true, 
         // logger: 'advanced-console',
-      }),
+      }},
     }),
   ],
   exports: [TypeOrmModule],

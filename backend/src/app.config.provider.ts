@@ -1,6 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 
 export interface AppConfigDatabase {
+  type: string;
   host: string;
   port: number;
   username: string;
@@ -13,6 +14,7 @@ export interface AppConfig {
 }
 
 const applicationConfig: AppConfigDatabase = {
+  type: process.env.DATABASE_DRIVER,
   host: process.env.DATABASE_HOST,
   port: parseInt(process.env.DATABASE_PORT, 10),
   username: process.env.DATABASE_USERNAME,
