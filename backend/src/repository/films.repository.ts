@@ -1,14 +1,14 @@
-// src/films/films.repository.ts
+// ../films/films.repository.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FilmDTO,
   FilmListResponseDTO,
   FilmSheduleDTO,
-} from 'src/films/dto/films.dto';
-import { Film } from 'src/films/entities/film.entity';
-import { Schedule } from 'src/films/entities/schedule.entity';
-import { TicketDto } from 'src/order/dto/order.dto';
+} from '../films/dto/films.dto';
+import { Film } from '../films/entities/film.entity';
+import { Schedule } from '../films/entities/schedule.entity';
+import { TicketDto } from '../order/dto/order.dto';
 import { Repository } from 'typeorm';
 
 @Injectable()
