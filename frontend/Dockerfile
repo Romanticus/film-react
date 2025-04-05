@@ -10,7 +10,10 @@ RUN npm install
 
 COPY frontend/ /app/
 
-RUN npm run build
+RUN npm install --no-save @rollup/rollup-linux-x64-gnu
+
+RUN npm run build || \
+    npx vite build
 
 FROM nginx:alpine
 
