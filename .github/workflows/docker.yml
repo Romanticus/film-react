@@ -33,7 +33,7 @@ jobs:
           context: ./
           file: ./docker/Dockerfile.frontend
           push: true
-          tags: ghcr.io/Romanticus/film-react-nest/frontend:latest
+          tags: ghcr.io/romanticus/film-react-nest/frontend:latest
 
       - name: Build and push backend Docker image
         uses: docker/build-push-action@v4
@@ -41,4 +41,4 @@ jobs:
           context: ./
           file: ./docker/Dockerfile.backend
           push: true
-          tags: ghcr.io/Romanticus/film-react-nest/backend:latest
+          tags: ghcr.io/romanticus/film-react-nest/backend:latest
