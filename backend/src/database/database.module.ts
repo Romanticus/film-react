@@ -15,11 +15,11 @@ import { Schedule } from 'src/films/entities/schedule.entity';
         
         return {
           type: driver,
-          host: config.get('DATABASE_HOST'),
-          port: config.get<number>('DATABASE_PORT'), // Явно указываем тип для порта
-          username: config.get('DATABASE_USERNAME'),
-          password: config.get('DATABASE_PASSWORD'),
-          database: config.get('DATABASE_NAME'),
+          host: config.get<string>('DATABASE_HOST'), // Явное указание типа
+          port: config.get<number>('DATABASE_PORT'),
+          username: config.get<string>('DATABASE_USERNAME'),
+          password: config.get<string>('DATABASE_PASSWORD'), // Фикс здесь
+          database: config.get<string>('DATABASE_NAME'),
           entities: [Film, Schedule],
           synchronize: false,
         };
