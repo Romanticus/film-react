@@ -10,7 +10,7 @@ import { Schedule } from 'src/films/entities/schedule.entity';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const driver = config.get<'postgres' | 'mysql' | 'sqlite'>('DATABASE_DRIVER', 'postgres');
+        const driver = config.get<'postgres'| 'sqlite'>('DATABASE_DRIVER', 'postgres');
         return{
         type: driver, 
         host: config.get('DATABASE_HOST'),
