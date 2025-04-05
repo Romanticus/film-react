@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./
-          file: ./docker/Dockerfile.frontend
+          file: ./frontend/Dockerfile
           push: true
           tags: ghcr.io/romanticus/film-react/frontend:latest
 
@@ -39,6 +39,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./
-          file: ./docker/Dockerfile.backend
+          file: ./backend/Dockerfile
           push: true
           tags: ghcr.io/romanticus/film-react/backend:latest
