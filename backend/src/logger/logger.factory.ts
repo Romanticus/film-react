@@ -4,7 +4,9 @@ import { JsonLogger } from './json.logger';
 import { TskvLogger } from './tskv.logger';
 
 export class LoggerFactory {
-  static getLogger(loggerType: string = process.env.LOGGER_TYPE || 'dev'): LoggerService {
+  static getLogger(
+    loggerType: string = process.env.LOGGER_TYPE || 'dev',
+  ): LoggerService {
     switch (loggerType.toLowerCase()) {
       case 'json':
         return new JsonLogger();
@@ -15,4 +17,4 @@ export class LoggerFactory {
         return new DevLogger();
     }
   }
-} 
+}

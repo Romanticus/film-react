@@ -10,9 +10,13 @@ import { Schedule } from 'src/films/entities/schedule.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService): DataSourceOptions => { // Явно указываем тип
-        const driver = config.get<'postgres' | 'sqlite'>('DATABASE_DRIVER', 'postgres');
-        
+      useFactory: (config: ConfigService): DataSourceOptions => {
+        // Явно указываем тип
+        const driver = config.get<'postgres' | 'sqlite'>(
+          'DATABASE_DRIVER',
+          'postgres',
+        );
+
         return {
           type: driver,
           host: config.get<string>('DATABASE_HOST'), // Явное указание типа

@@ -4,24 +4,23 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Film } from '../films/entities/film.entity';
 import { Schedule } from '../films/entities/schedule.entity';
 import { Repository } from 'typeorm';
-import { FilmListResponseDTO, FilmSheduleDTO } from '../films/dto/films.dto';
 
 // Мокируем TypeORM репозитории
 const queryBuilder = {
   leftJoinAndSelect: jest.fn().mockReturnThis(),
-  getManyAndCount: jest.fn().mockResolvedValue([[], 0])
+  getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
 };
 
 const mockFilmRepository = {
   find: jest.fn(),
   findOne: jest.fn(),
-  createQueryBuilder: jest.fn().mockReturnValue(queryBuilder)
+  createQueryBuilder: jest.fn().mockReturnValue(queryBuilder),
 };
 
 const mockScheduleRepository = {
   find: jest.fn(),
   findOne: jest.fn(),
-  save: jest.fn()
+  save: jest.fn(),
 };
 
 describe('FilmsRepository', () => {
@@ -41,7 +40,7 @@ describe('FilmsRepository', () => {
       description: 'Description of film 1',
       image: 'image1.jpg',
       cover: 'cover1.jpg',
-      schedules: []
+      schedules: [],
     },
     {
       id: '2',
@@ -53,8 +52,8 @@ describe('FilmsRepository', () => {
       description: 'Description of film 2',
       image: 'image2.jpg',
       cover: 'cover2.jpg',
-      schedules: []
-    }
+      schedules: [],
+    },
   ];
 
   const mockSchedules = [
@@ -77,7 +76,7 @@ describe('FilmsRepository', () => {
       seats: 22,
       price: 400,
       taken: ['3-5', '3-6'],
-    }
+    },
   ];
 
   // Добавляем расписания к фильму
@@ -89,24 +88,29 @@ describe('FilmsRepository', () => {
         FilmsRepository,
         {
           provide: getRepositoryToken(Film),
-          useValue: mockFilmRepository
+          useValue: mockFilmRepository,
         },
         {
           provide: getRepositoryToken(Schedule),
-          useValue: mockScheduleRepository
-        }
+          useValue: mockScheduleRepository,
+        },
       ],
     }).compile();
 
     repository = module.get<FilmsRepository>(FilmsRepository);
     filmRepository = module.get<Repository<Film>>(getRepositoryToken(Film));
-    scheduleRepository = module.get<Repository<Schedule>>(getRepositoryToken(Schedule));
+    scheduleRepository = module.get<Repository<Schedule>>(
+      getRepositoryToken(Schedule),
+    );
 
     // Сбрасываем моки
     jest.clearAllMocks();
-    
+
     // Настраиваем моки для всего набора тестов
-    queryBuilder.getManyAndCount.mockResolvedValue([mockFilms, mockFilms.length]);
+    queryBuilder.getManyAndCount.mockResolvedValue([
+      mockFilms,
+      mockFilms.length,
+    ]);
   });
 
   it('should be defined', () => {
@@ -116,9 +120,12 @@ describe('FilmsRepository', () => {
   describe('findAll', () => {
     it('should return all films', async () => {
       const result = await repository.findAll();
-      
+
       expect(filmRepository.createQueryBuilder).toHaveBeenCalledWith('film');
-      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith('film.schedules', 'schedules');
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'film.schedules',
+        'schedules',
+      );
       expect(result.total).toBe(2);
       expect(result.items.length).toBe(2);
     });
@@ -127,9 +134,9 @@ describe('FilmsRepository', () => {
   describe('findFilmSchedule', () => {
     it('should return a film schedule', async () => {
       mockFilmRepository.findOne.mockResolvedValue(mockFilms[0]);
-      
+
       const result = await repository.findFilmSchedule('1');
-      
+
       expect(filmRepository.findOne).toHaveBeenCalledWith({
         where: { id: '1' },
         relations: ['schedules'],
@@ -145,8 +152,10 @@ describe('FilmsRepository', () => {
 
     it('should throw an error when film not found', async () => {
       mockFilmRepository.findOne.mockResolvedValue(null);
-      
-      await expect(repository.findFilmSchedule('nonexistent')).rejects.toThrow('Film Not Found');
+
+      await expect(repository.findFilmSchedule('nonexistent')).rejects.toThrow(
+        'Film Not Found',
+      );
       expect(filmRepository.findOne).toHaveBeenCalled();
     });
   });
@@ -156,33 +165,33 @@ describe('FilmsRepository', () => {
       const filmId = '1';
       const sessionId = 'schedule1';
       const tickets = [
-        { 
-          film: 'Film 1', 
-          session: 'session1', 
-          daytime: new Date(), 
-          row: 5, 
-          seat: 15, 
-          price: 350 
-        }
+        {
+          film: 'Film 1',
+          session: 'session1',
+          daytime: new Date(),
+          row: 5,
+          seat: 15,
+          price: 350,
+        },
       ];
 
       const mockSchedule = {
         id: sessionId,
         film: { id: filmId },
         taken: ['1-1'],
-        price: 350
+        price: 350,
       };
 
       mockScheduleRepository.findOne.mockResolvedValue(mockSchedule);
       mockScheduleRepository.save.mockResolvedValue({
         ...mockSchedule,
-        taken: [...mockSchedule.taken, '5:15']
+        taken: [...mockSchedule.taken, '5:15'],
       });
 
       const result = await repository.reserveSeats(filmId, sessionId, tickets);
 
       expect(scheduleRepository.findOne).toHaveBeenCalledWith({
-        where: { id: sessionId, film: { id: filmId } }
+        where: { id: sessionId, film: { id: filmId } },
       });
       expect(scheduleRepository.save).toHaveBeenCalled();
       expect(result.taken).toContain('5:15');
@@ -191,11 +200,22 @@ describe('FilmsRepository', () => {
     it('should throw error if session not found', async () => {
       const filmId = '1';
       const sessionId = 'nonexistent';
-      const tickets = [{ film: 'Film 1', session: 'session1', daytime: new Date(), row: 5, seat: 15, price: 350 }];
+      const tickets = [
+        {
+          film: 'Film 1',
+          session: 'session1',
+          daytime: new Date(),
+          row: 5,
+          seat: 15,
+          price: 350,
+        },
+      ];
 
       mockScheduleRepository.findOne.mockResolvedValue(null);
 
-      await expect(repository.reserveSeats(filmId, sessionId, tickets)).rejects.toThrow('Сеанс не найден');
+      await expect(
+        repository.reserveSeats(filmId, sessionId, tickets),
+      ).rejects.toThrow('Сеанс не найден');
       expect(scheduleRepository.findOne).toHaveBeenCalled();
     });
 
@@ -203,20 +223,36 @@ describe('FilmsRepository', () => {
       const filmId = '1';
       const sessionId = 'schedule1';
       const tickets = [
-        { film: 'Film 1', session: 'session1', daytime: new Date(), row: 5, seat: 15, price: 350 },
-        { film: 'Film 1', session: 'session1', daytime: new Date(), row: 5, seat: 15, price: 350 }
+        {
+          film: 'Film 1',
+          session: 'session1',
+          daytime: new Date(),
+          row: 5,
+          seat: 15,
+          price: 350,
+        },
+        {
+          film: 'Film 1',
+          session: 'session1',
+          daytime: new Date(),
+          row: 5,
+          seat: 15,
+          price: 350,
+        },
       ];
 
       const mockSchedule = {
         id: sessionId,
         film: { id: filmId },
         taken: [],
-        price: 350
+        price: 350,
       };
 
       mockScheduleRepository.findOne.mockResolvedValue(mockSchedule);
 
-      await expect(repository.reserveSeats(filmId, sessionId, tickets)).rejects.toThrow('Дубликаты мест в запросе');
+      await expect(
+        repository.reserveSeats(filmId, sessionId, tickets),
+      ).rejects.toThrow('Дубликаты мест в запросе');
       expect(scheduleRepository.findOne).toHaveBeenCalled();
     });
 
@@ -224,19 +260,28 @@ describe('FilmsRepository', () => {
       const filmId = '1';
       const sessionId = 'schedule1';
       const tickets = [
-        { film: 'Film 1', session: 'session1', daytime: new Date(), row: 1, seat: 1, price: 350 }
+        {
+          film: 'Film 1',
+          session: 'session1',
+          daytime: new Date(),
+          row: 1,
+          seat: 1,
+          price: 350,
+        },
       ];
 
       const mockSchedule = {
         id: sessionId,
         film: { id: filmId },
         taken: ['1:1'],
-        price: 350
+        price: 350,
       };
 
       mockScheduleRepository.findOne.mockResolvedValue(mockSchedule);
 
-      await expect(repository.reserveSeats(filmId, sessionId, tickets)).rejects.toThrow('Занятые места');
+      await expect(
+        repository.reserveSeats(filmId, sessionId, tickets),
+      ).rejects.toThrow('Занятые места');
       expect(scheduleRepository.findOne).toHaveBeenCalled();
     });
   });

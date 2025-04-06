@@ -40,4 +40,4 @@ export class JsonLogger implements LoggerService {
   verbose(message: any, ...optionalParams: any[]) {
     console.log(this.formatMessage('verbose', message, optionalParams));
   }
-} 
+}

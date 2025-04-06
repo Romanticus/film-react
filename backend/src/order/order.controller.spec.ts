@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
-import { CreateOrderDto, OrderResponse, TicketDto } from './dto/order.dto';
+import { CreateOrderDto, OrderResponse } from './dto/order.dto';
 
 // Мокируем OrderService полностью
 jest.mock('./order.service', () => {
   return {
     OrderService: jest.fn().mockImplementation(() => {
       return {
-        createOrder: jest.fn()
+        createOrder: jest.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -29,7 +29,7 @@ describe('OrderController', () => {
         daytime: new Date('2023-05-15T18:00:00'),
         row: 5,
         seat: 10,
-        price: 350
+        price: 350,
       },
       {
         film: 'Film 1',
@@ -37,9 +37,9 @@ describe('OrderController', () => {
         daytime: new Date('2023-05-15T18:00:00'),
         row: 5,
         seat: 11,
-        price: 350
-      }
-    ]
+        price: 350,
+      },
+    ],
   };
 
   const mockOrderResponse: OrderResponse = {
@@ -52,7 +52,7 @@ describe('OrderController', () => {
         daytime: new Date('2023-05-15T18:00:00'),
         row: 5,
         seat: 10,
-        price: 350
+        price: 350,
       },
       {
         id: 'ticket2',
@@ -61,9 +61,9 @@ describe('OrderController', () => {
         daytime: new Date('2023-05-15T18:00:00'),
         row: 5,
         seat: 11,
-        price: 350
-      }
-    ]
+        price: 350,
+      },
+    ],
   };
 
   beforeEach(async () => {
@@ -72,14 +72,16 @@ describe('OrderController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrderController],
-      providers: [OrderService]
+      providers: [OrderService],
     }).compile();
 
     controller = module.get<OrderController>(OrderController);
     orderService = module.get<OrderService>(OrderService);
-    
+
     // Настраиваем реализацию мока
-    jest.spyOn(orderService, 'createOrder').mockResolvedValue(mockOrderResponse);
+    jest
+      .spyOn(orderService, 'createOrder')
+      .mockResolvedValue(mockOrderResponse);
   });
 
   it('should be defined', () => {
@@ -89,7 +91,7 @@ describe('OrderController', () => {
   describe('createOrder', () => {
     it('should create a new order and return the response', async () => {
       const result = await controller.createOrder(mockCreateOrderDto);
-      
+
       expect(orderService.createOrder).toHaveBeenCalledWith(mockCreateOrderDto);
       expect(result).toEqual(mockOrderResponse);
       expect(result.total).toBe(2);
@@ -98,22 +100,29 @@ describe('OrderController', () => {
     });
 
     it('should handle validation errors', async () => {
-    
       const invalidOrder = {
         email: 'test@example.com',
         // Missing phone and tickets
       } as CreateOrderDto;
 
-      jest.spyOn(orderService, 'createOrder').mockRejectedValueOnce(new Error('Validation failed'));
-      
-      await expect(controller.createOrder(invalidOrder)).rejects.toThrow('Validation failed');
+      jest
+        .spyOn(orderService, 'createOrder')
+        .mockRejectedValueOnce(new Error('Validation failed'));
+
+      await expect(controller.createOrder(invalidOrder)).rejects.toThrow(
+        'Validation failed',
+      );
       expect(orderService.createOrder).toHaveBeenCalledWith(invalidOrder);
     });
 
     it('should handle service errors', async () => {
-      jest.spyOn(orderService, 'createOrder').mockRejectedValueOnce(new Error('Service error'));
-      
-      await expect(controller.createOrder(mockCreateOrderDto)).rejects.toThrow('Service error');
+      jest
+        .spyOn(orderService, 'createOrder')
+        .mockRejectedValueOnce(new Error('Service error'));
+
+      await expect(controller.createOrder(mockCreateOrderDto)).rejects.toThrow(
+        'Service error',
+      );
       expect(orderService.createOrder).toHaveBeenCalledWith(mockCreateOrderDto);
     });
   });

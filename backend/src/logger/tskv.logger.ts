@@ -9,18 +9,18 @@ export class TskvLogger implements LoggerService {
   formatMessage(level: string, message: any, ...optionalParams: any[]): string {
     // Start with level
     let formattedMessage = `level=${level}`;
-    
+
     // Add message
     formattedMessage += `\tmessage=${this.escapeValue(message)}`;
-    
+
     // Add timestamp
     formattedMessage += `\ttime=${new Date().toISOString()}`;
-    
+
     // Process optional parameters
     if (optionalParams && optionalParams.length > 0) {
       // Flatten the array if needed
       const params = optionalParams.flat();
-      
+
       // Check if the first param is an error object
       if (params[0] instanceof Error) {
         const error = params[0];
@@ -31,7 +31,7 @@ export class TskvLogger implements LoggerService {
       } else if (typeof params[0] === 'object' && params[0] !== null) {
         // Handle object parameters
         const obj = params[0];
-        Object.keys(obj).forEach(key => {
+        Object.keys(obj).forEach((key) => {
           formattedMessage += `\t${key}=${this.escapeValue(obj[key])}`;
         });
       } else {
@@ -41,10 +41,10 @@ export class TskvLogger implements LoggerService {
         });
       }
     }
-    
+
     return formattedMessage;
   }
-  
+
   /**
    * Escape special characters in values for TSKV format
    */
@@ -52,11 +52,10 @@ export class TskvLogger implements LoggerService {
     if (value === null || value === undefined) {
       return '';
     }
-    
-    const stringValue = typeof value === 'object' 
-      ? JSON.stringify(value) 
-      : String(value);
-      
+
+    const stringValue =
+      typeof value === 'object' ? JSON.stringify(value) : String(value);
+
     // Escape tabs and newlines as they are special in TSKV
     return stringValue
       .replace(/\t/g, '\\t')
@@ -98,4 +97,4 @@ export class TskvLogger implements LoggerService {
   verbose(message: any, ...optionalParams: any[]) {
     console.log(this.formatMessage('verbose', message, optionalParams));
   }
-} 
+}

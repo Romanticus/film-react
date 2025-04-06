@@ -9,9 +9,9 @@ jest.mock('../repository/films.repository', () => {
     FilmsRepository: jest.fn().mockImplementation(() => {
       return {
         findAll: jest.fn(),
-        findFilmSchedule: jest.fn()
+        findFilmSchedule: jest.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -77,10 +77,7 @@ describe('FilmsService', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FilmsService,
-        FilmsRepository
-      ],
+      providers: [FilmsService, FilmsRepository],
     }).compile();
 
     service = module.get<FilmsService>(FilmsService);
@@ -88,7 +85,9 @@ describe('FilmsService', () => {
 
     // Настраиваем моки
     jest.spyOn(filmsRepository, 'findAll').mockResolvedValue(mockFilmsList);
-    jest.spyOn(filmsRepository, 'findFilmSchedule').mockResolvedValue(mockFilmSchedule);
+    jest
+      .spyOn(filmsRepository, 'findFilmSchedule')
+      .mockResolvedValue(mockFilmSchedule);
   });
 
   it('should be defined', () => {
@@ -98,7 +97,7 @@ describe('FilmsService', () => {
   describe('getAllFilms', () => {
     it('should return all films', async () => {
       const result = await service.getAllFilms();
-      
+
       expect(filmsRepository.findAll).toHaveBeenCalled();
       expect(result).toEqual(mockFilmsList);
       expect(result.total).toBe(2);
@@ -110,16 +109,20 @@ describe('FilmsService', () => {
     it('should return schedule for a specific film', async () => {
       const filmId = '1';
       const result = await service.getFilmShedule(filmId);
-      
+
       expect(filmsRepository.findFilmSchedule).toHaveBeenCalledWith(filmId);
       expect(result).toEqual(mockFilmSchedule);
     });
 
     it('should throw an error when film not found', async () => {
       const filmId = 'nonexistent';
-      jest.spyOn(filmsRepository, 'findFilmSchedule').mockRejectedValueOnce(new Error('Фильм не найден'));
-      
-      await expect(service.getFilmShedule(filmId)).rejects.toThrow('Фильм не найден');
+      jest
+        .spyOn(filmsRepository, 'findFilmSchedule')
+        .mockRejectedValueOnce(new Error('Фильм не найден'));
+
+      await expect(service.getFilmShedule(filmId)).rejects.toThrow(
+        'Фильм не найден',
+      );
       expect(filmsRepository.findFilmSchedule).toHaveBeenCalledWith(filmId);
     });
   });

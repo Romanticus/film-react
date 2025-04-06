@@ -53,7 +53,7 @@ export class FilmsRepository {
       relations: ['schedules'],
       order: {
         schedules: {
-          daytime: 'ASC', 
+          daytime: 'ASC',
         },
       },
     });

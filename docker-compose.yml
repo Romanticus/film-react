@@ -4,6 +4,7 @@ services:
       context: ./
       dockerfile: ./frontend/Dockerfile
     container_name: frontend
+    restart: "unless-stopped"
     ports:
       - "80:80"
     networks:
@@ -13,9 +14,12 @@ services:
 
   backend:
     build:
-      context: ./
+      context: ./backend
       dockerfile: ./backend/Dockerfile
     container_name: backend
+    restart: "unless-stopped"
+    depends_on:
+      - db
     ports:
       - "3000:3000"  
     networks:
@@ -30,6 +34,7 @@ services:
   db:
     image: postgres:15
     container_name: db
+    restart: "unless-stopped"
     environment:
       POSTGRES_USER: prac1
       POSTGRES_PASSWORD: prac1
@@ -44,6 +49,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
+    restart: "unless-stopped"
     environment:
       PGADMIN_DEFAULT_EMAIL: root@example.com
       PGADMIN_DEFAULT_PASSWORD: rootT

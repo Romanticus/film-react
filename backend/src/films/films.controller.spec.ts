@@ -9,9 +9,9 @@ jest.mock('./films.service', () => {
     FilmsService: jest.fn().mockImplementation(() => {
       return {
         getAllFilms: jest.fn(),
-        getFilmShedule: jest.fn()
+        getFilmShedule: jest.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -75,7 +75,7 @@ describe('FilmsController', () => {
   beforeEach(async () => {
     // Сбрасываем все моки
     jest.clearAllMocks();
-    
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FilmsController],
       providers: [FilmsService],
@@ -83,10 +83,12 @@ describe('FilmsController', () => {
 
     controller = module.get<FilmsController>(FilmsController);
     filmsService = module.get<FilmsService>(FilmsService);
-    
+
     // Настраиваем реализацию моков
     jest.spyOn(filmsService, 'getAllFilms').mockResolvedValue(mockFilmsList);
-    jest.spyOn(filmsService, 'getFilmShedule').mockResolvedValue(mockFilmSchedule);
+    jest
+      .spyOn(filmsService, 'getFilmShedule')
+      .mockResolvedValue(mockFilmSchedule);
   });
 
   it('should be defined', () => {
@@ -96,7 +98,7 @@ describe('FilmsController', () => {
   describe('getAllFilms', () => {
     it('should return an array of films', async () => {
       const result = await controller.getAllFilms();
-      
+
       expect(filmsService.getAllFilms).toHaveBeenCalled();
       expect(result).toEqual(mockFilmsList);
       expect(result.total).toBe(2);
@@ -109,7 +111,7 @@ describe('FilmsController', () => {
     it('should return the schedule for a specific film', async () => {
       const filmId = '1';
       const result = await controller.getFilmShedule(filmId);
-      
+
       expect(filmsService.getFilmShedule).toHaveBeenCalledWith(filmId);
       expect(result).toEqual(mockFilmSchedule);
       expect(result.total).toBe(2);
@@ -119,9 +121,13 @@ describe('FilmsController', () => {
 
     it('should handle errors when film is not found', async () => {
       const filmId = 'nonexistent';
-      jest.spyOn(filmsService, 'getFilmShedule').mockRejectedValueOnce(new Error('Фильм не найден'));
-      
-      await expect(controller.getFilmShedule(filmId)).rejects.toThrow('Фильм не найден');
+      jest
+        .spyOn(filmsService, 'getFilmShedule')
+        .mockRejectedValueOnce(new Error('Фильм не найден'));
+
+      await expect(controller.getFilmShedule(filmId)).rejects.toThrow(
+        'Фильм не найден',
+      );
       expect(filmsService.getFilmShedule).toHaveBeenCalledWith(filmId);
     });
   });
