@@ -1,11 +1,11 @@
-FROM node:18 AS build
+FROM node:20 AS build
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm i --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-FROM node:18
+FROM node:20
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/dist ./dist
 COPY package*.json ./
