@@ -24,6 +24,9 @@ services:
       - DATABASE_USERNAME=prac1
       - DATABASE_PASSWORD=prac1
       - DATABASE_NAME=prac1
+    build:
+      context: ./  # Использовать корень проекта как контекст
+      dockerfile: ./backend/Dockerfile
 
   db:
     image: postgres:15
